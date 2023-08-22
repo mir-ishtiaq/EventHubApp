@@ -18,10 +18,19 @@
     <main>
         {% block content %}
         {% endblock %}
+        {% macro event_detail(event) %}
+        <a href="{% url 'event_detail' event.id %}">{{ event.name }}</a>
+    {% endmacro %}
+
+    <ul>
+        {% for event in events %}
+            <li>{{ event_detail(event) }}</li>
+        {% endfor %}
+    </ul>
     </main>
 
     <footer>
-        <p>&copy; {{ year }} Event Hub. All rights reserved.</p>
+        <p>&copy; {{ year }} EventHub. All rights reserved.</p>
     </footer>
 </body>
 </html>

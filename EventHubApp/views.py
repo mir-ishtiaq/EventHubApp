@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from .models import Event
 
+def home(request):
+    return render(request, 'base.html')
+
 def event_list(request):
     events = Event.objects.all()
     return render(request, 'event_list.html', {'events': events})

@@ -6,7 +6,6 @@
     <title>{% block title %}EventHub{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
-
 </head>
 <body>
     <header>
@@ -21,15 +20,6 @@
     <main>
         {% block content %}
         {% endblock %}
-        {% macro event_detail(event) %}
-        <a href="{% url 'event_detail' event.id %}">{{ event.name }}</a>
-    {% endmacro %}
-
-    <ul>
-        {% for event in events %}
-            <li>{{ event_detail(event) }}</li>
-        {% endfor %}
-    </ul>
     </main>
 
     <footer>

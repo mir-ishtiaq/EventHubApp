@@ -3,6 +3,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import RegistrationForm, LoginForm
 from .models import Event
+from django.contrib.auth.decorators import login_required
+from .forms import EventCreationForm
+from django.http import HttpResponseForbidden
 
 
 def register(request):
@@ -25,14 +28,14 @@ def user_login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('home')
+                return redirect('dashboard')
     else:
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
 
 def user_logout(request):
     logout(request)
-    return redirect('home')
+    return redirect('login')
 
 
 def home(request):
@@ -42,6 +45,35 @@ def event_list(request):
     events = Event.objects.all()
     return render(request, 'event_list.html', {'events': events})
 
+@login_required
 def event_detail(request, event_id):
     event = Event.objects.get(pk=event_id)
     return render(request, 'event_detail.html', {'event': event})
+
+
+@login_required
+def create_event(request):
+    if request.method == 'POST':
+        form = EventCreationForm(request.POST)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.user = request.user  # Associate the event with the logged-in user
+            event.category = form.cleaned_data['category']
+            event.save()
+            return redirect('event_list')  # Redirect to event list page
+    else:
+        form = EventCreationForm()
+    return render(request, 'event_creation.html', {'form': form})
+
+@login_required
+def dashboard(request):
+    return render(request, 'dashboard.html')
+
+@login_required
+def delete_event(request, event_id):
+    try:
+        event = Event.objects.get(id=event_id, user=request.user)
+        event.delete()
+        return redirect('event_list')  # Redirect to event list page
+    except Event.DoesNotExist:
+        return HttpResponseForbidden()  # Display an error message or handle as needed

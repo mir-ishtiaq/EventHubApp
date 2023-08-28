@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Dashboard</h2>
+  <ul>
+    <li><a href="{% url 'event_list' %}">Events List</a></li>
+    <li><a href="{% url 'create_event' %}">Create Event</a></li>
+  </ul>
+{% endblock %}

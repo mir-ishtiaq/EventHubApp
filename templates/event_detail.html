@@ -9,5 +9,7 @@
         <p>Location: {{ event.location }}</p>
         <p>Organizer: {{ event.organizer }}</p>
         <a href="{% url 'event_list' %}" class="btn">Back to Event List</a>
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <a href="{% url 'logout' %}">Logout</a>
     </div>
 {% endblock %}

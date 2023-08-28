@@ -14,7 +14,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('home')
+            return redirect('dashboard')
     else:
         form = RegistrationForm()
     return render(request, 'register.html', {'form': form})
@@ -41,6 +41,7 @@ def user_logout(request):
 def home(request):
     return render(request, 'base.html')
 
+@login_required
 def event_list(request):
     events = Event.objects.all()
     return render(request, 'event_list.html', {'events': events})

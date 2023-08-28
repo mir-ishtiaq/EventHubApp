@@ -26,4 +26,7 @@
             <li>No events found</li>
         {% endif %}
     </ul>
+    <a href="{% url 'create_event' %}">Create Event</a>
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    <a href="{% url 'logout' %}">Logout</a>
 {% endblock %}

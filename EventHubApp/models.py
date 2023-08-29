@@ -3,14 +3,14 @@ from django.contrib.auth.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)  # Add a description field
+    description = models.TextField(blank=True)
 
     def __str__(self):
         return self.name
 
 class Location(models.Model):
     name = models.CharField(max_length=100)
-    address = models.CharField(max_length=200, default="Unknown")  # Provide a default value
+    address = models.CharField(max_length=200, default="Unknown")
     description = models.TextField(blank=True)
 
     def __str__(self):
@@ -20,7 +20,7 @@ class Location(models.Model):
 
 class Event(models.Model):
     title = models.CharField(max_length=200)
-    description = models.TextField()  # You already have the description field
+    description = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     date = models.DateTimeField()

@@ -66,6 +66,17 @@ def create_event(request):
     else:
         form = EventCreationForm()
     return render(request, 'event_creation.html', {'form': form})
+@login_required
+def edit_event(request, event_id):
+    event = Event.objects.get(id=event_id)
+    if request.method == 'POST':
+        form = EventCreationForm(request.POST, instance=event)
+        if form.is_valid():
+            form.save()
+            return redirect('admin_dashboard')
+    else:
+        form = EventCreationForm(instance=event)
+    return render(request, 'edit_event.html', {'form': form})
 
 @login_required
 def dashboard(request):
@@ -78,12 +89,25 @@ def delete_event(request, event_id):
         event.delete()
         return redirect('event_list')  # Redirect to event list page
     except Event.DoesNotExist:
-        return HttpResponseForbidden()  # Display an error message or handle as needed
+        return HttpResponseForbidden()  # Display an error message
 
 def custom_admin(request):
     if request.user.is_staff:
+        search_query = request.GET.get('search', '')
+        event_filter = request.GET.get('filter', '')
+
         users = User.objects.all()
         events = Event.objects.all()
+
+        # Implementing search functionality
+        if search_query:
+            users = users.filter(username__icontains=search_query)
+            events = events.filter(title__icontains=search_query)
+
+        # Implementing filter functionality
+        if event_filter:
+            events = events.filter(category__name=event_filter)
+
         total_events = events.count()
         total_users = users.count()
 
@@ -92,8 +116,11 @@ def custom_admin(request):
             'events': events,
             'total_events': total_events,
             'total_users': total_users,
+            'search_query': search_query,
+            'event_filter': event_filter,
         }
-        return render(request, 'admin_dashboard.html', {'users': users, 'events': events})
+
+        return render(request, 'admin_dashboard.html', context)
     else:
         return HttpResponse("Unauthorized")
 

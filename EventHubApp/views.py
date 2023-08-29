@@ -5,7 +5,8 @@ from .forms import RegistrationForm, LoginForm
 from .models import Event
 from django.contrib.auth.decorators import login_required
 from .forms import EventCreationForm
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponse
+from django.contrib.auth.models import User
 
 
 def register(request):
@@ -78,3 +79,21 @@ def delete_event(request, event_id):
         return redirect('event_list')  # Redirect to event list page
     except Event.DoesNotExist:
         return HttpResponseForbidden()  # Display an error message or handle as needed
+
+def custom_admin(request):
+    if request.user.is_staff:
+        users = User.objects.all()
+        events = Event.objects.all()
+        total_events = events.count()
+        total_users = users.count()
+
+        context = {
+            'users': users,
+            'events': events,
+            'total_events': total_events,
+            'total_users': total_users,
+        }
+        return render(request, 'admin_dashboard.html', {'users': users, 'events': events})
+    else:
+        return HttpResponse("Unauthorized")
+
